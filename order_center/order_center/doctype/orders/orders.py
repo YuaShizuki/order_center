@@ -104,19 +104,19 @@ class Orders(Document):
         d["serviceTimeInMins"] = self.service_time_in_mins
         d["preferredModeOfTransport"] = self.preferred_mode_of_transport
         self.genInvoice()
-        #headers = {"content-type": "application/json"}
+        headers = {"content-type": "application/json"}
         print("*********** LOGINEXT ********************")
         print(json.dumps(d))
         print("*********** LOGINEXT ********************")
-        #r = requests.post(api, data = json.dumps(d), headers=headers)
-        #try:
-        #    resp = json.loads(r.text)
-        #    if resp["statusCode"] != "201":
-        #         frappe.throw(
-        #                 _("Error recived response from loginext server: %s" % 
-        #                    r.text))
-        #except Exception:
-        #    raise frappe.throw(_("Error parsing json! %s" % r.text))
+        r = requests.post(api, data = json.dumps(d), headers=headers)
+        try:
+            resp = json.loads(r.text)
+            if resp["statusCode"] != "201":
+                 frappe.throw(
+                         _("Error recived response from loginext server: %s" % 
+                            r.text))
+        except Exception:
+            raise frappe.throw(_("Error parsing json! %s" % r.text))
 
 
     def get_default_account(self):
