@@ -1,17 +1,109 @@
 import frappe
 import os
 import json
+import datetime
+import uuid
 
 @frappe.whitelist(allow_guest=True)
-def get_info_from_loginext():
-    # frappe.local.request 
-    #order = frappe.get_doc({
-    #		"doctype": "Order",
-    #		"customer": 
-    #	})
-    #order.insert()
-    return "coreanimal says: %s" % frappe.local.request
+def test():
+    return frappe.get_list("Customer", fields=["*"],
+            filters={"customer_name":"Adius Xroe"})
 
+
+@frappe.whitelist(allow_guest=True)
+def get_default_account():
+    return frappe.get_list("Account", fields=["name"],
+            filters={"account_name":"Debtors"})[0]["name"]
+
+
+@frappe.whitelist(allow_guest=True)
+def build_item_code():
+    warehouse = frappe.get_list("Warehouse", fields=["name"],
+            filters={"warehouse_name":"Work In Progress"})[0]["name"]
+    itemgroup = frappe.get_list("Item Group", fields=["name"],
+            filters={"item_group_name":"All Item Groups"})[0]["name"]
+    item = frappe.get_doc({
+            "doctype": "Item",
+            "item_code": str(uuid.uuid4()),
+            "item_name": "Transportation",
+            "item_group": itemgroup,
+            "description": "Trasportation",
+            "default_warehouse": warehouse
+            })
+    item.insert()
+    frappe.db.commit()
+    return item.name
+
+@frappe.whitelist(allow_guest=True)
+def get_income_account():
+    return frappe.get_list("Account", fields=["name"],
+            filters={"account_name":"Sales"})[0]["name"]
+
+@frappe.whitelist(allow_guest=True)
+def build_item(item, price):
+    return { 
+            "item_name":item,
+            "description": "Transporting Item",
+            "qty": 1.0,
+            "rate":price,
+            "income_account":get_income_account()
+        }
+
+@frappe.whitelist(allow_guest=True)
+def build_item_ajax():
+    return build_item("Penis", 300)
+
+
+def get_default_territory():
+    return frappe.get_list("Territory", fields=["name"],
+            filters={"territory_name":"All Territories"})[0]["name"]
+
+
+def get_default_customer_group():
+    return frappe.get_list("Customer Group", fields=["name"],
+            filters={"customer_group_name":"Commercial"})[0].name
+
+
+
+def build_contact_for_customer(cust):
+    contact = frappe.get_doc({"doctype":"Contact",
+        "first_name":"Adius",
+        "email_id":"adium@uw.edu",
+        "customer":cust
+    })
+    contact.insert()
+    frappe.db.commit()
+
+def build_throw_away_customer():
+    customer = frappe.get_doc({"doctype":"Customer",
+        "customer_name":"Adius Xroe", 
+        "customer_type":"Individual",
+        "territory": get_default_territory(),
+        "customer_group":get_default_customer_group()
+        })
+    customer.insert()
+    frappe.db.commit()
+    build_contact_for_customer(customer.name)
+    return customer.name
+
+@frappe.whitelist(allow_guest=True)
+def create_sample_invoice():
+    #consignor = frappe.get_list("Consignor", fields=["name1"])[0]
+    due_date = datetime.datetime.now() + datetime.timedelta(days=42)
+    due_date = due_date.strftime("%y-%m-%d")
+    d = frappe.get_doc({
+        "doctype":"Sales Invoice",
+        "naming_series":"SINV-",
+        "posting_date":frappe.utils.nowdate(),
+        "due_date":due_date,
+        "debit_to":get_default_account(),
+        "items":[build_item("trasport oranges", 300.0)],
+        "customer":build_throw_away_customer()
+        })
+    d.insert()
+    frappe.db.commit()
+    return d.name
+    
 @frappe.whitelist(allow_guest=True)
 def clear_all_cache():
      frappe.clear_cache()
