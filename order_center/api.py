@@ -162,5 +162,8 @@ def clustering_updates():
 
 @frappe.whitelist(allow_guest=True)
 def clustering_and_scheduling():
+    print("**" * 10)
+    print(frappe.local.request.args["inputData"])
+    print("**" * 10)
     open(os.path.expanduser("~/erp_data/clustering_and_scheduling.json"), 
             "a").write(frappe.local.request.data + "\n")
