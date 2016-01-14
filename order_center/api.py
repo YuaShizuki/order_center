@@ -162,8 +162,8 @@ def clustering_updates():
 
 @frappe.whitelist(allow_guest=True)
 def clustering_and_scheduling():
-    print("**" * 10)
-    print(frappe.local.request.args["inputData"])
-    print("**" * 10)
+    print(frappe.local.request.values)
     open(os.path.expanduser("~/erp_data/clustering_and_scheduling.json"), 
             "a").write(frappe.local.request.data + "\n")
+
+#CombinedMultiDict([ImmutableMultiDict([]), ImmutableMultiDict([('inputData', u'[{"tripName":"TRIP-32","deliveryMediumName":"MEHUL","driverName":"","vehicle":"","shipmentDetails":[{"latitude":19.199272,"longitude":72.857732,"clientShipmentId":"222222201","deliveryOrder":4},{"latitude":19.199272,"longitude":72.857732,"clientShipmentId":"112000003","deliveryOrder":5},{"latitude":19.1076375,"longitude":72.8655789,"clientShipmentId":"test_order","deliveryOrder":6}]}]')])])
