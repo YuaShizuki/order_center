@@ -5,7 +5,7 @@ from frappe import _
 def get_data():
 	return {
 		"order_center": {
-			"color": "Khaki",
+			"color": "MediumPurple",
 			"icon": "icon-suitcase",
 			"type": "module",
 			"label": _("order_center"),
