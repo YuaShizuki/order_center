@@ -89,16 +89,26 @@ def partial_delivery_notification():
     for parcel in json.loads(frappe.local.request.values["inputData"]):
         set_deliverd(parcel, "Partial Delivery")
 
+
+@frappe.whitelist(allow_guest=True)
+def arrival_end_trip():
+    trip = json.loads(frappe.local.request.values["inputData"])
+    t = frappe.get_list("DRS", fields=["*"],
+            filters={"trip_name":trip["tripName"]})[0]
+    tx = frappe.get_doc("DRS", t["name"])
+    tx.status = "End Trip"
+    tx.save()
+
 #---------------------------------------------THROW-----------------------------
 @frappe.whitelist(allow_guest=True)
 def clear_all_cache():
      frappe.clear_cache()
      return "cache cleard"
 
-@frappe.whitelist(allow_guest=True)
-def arrival_end_trip():
-    open(os.path.expanduser("~/erp_data/arrival_end_trip.json"), 
-            "a").write(frappe.local.request.data + "\n")
+#@frappe.whitelist(allow_guest=True)
+#def arrival_end_trip():
+#    open(os.path.expanduser("~/erp_data/arrival_end_trip.json"), 
+#            "a").write(frappe.local.request.data + "\n")
 
 @frappe.whitelist(allow_guest=True)
 def accept():
