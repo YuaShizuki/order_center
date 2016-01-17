@@ -33,11 +33,9 @@ def parse_shipment_details(shdetails):
         result.append(d)
     return result
 
-
 @frappe.whitelist(allow_guest=True)
 def dispatch_start_trip():
-    for trip in json.loads(frappe.local.request.values["inputData"]):
-        start_trip(trip)
+    start_trip(json.loads(frappe.local.request.values["inputData"]))
 
 def start_trip(trip):
     t = frappe.get_list("DRS", fields=["*"],
