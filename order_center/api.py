@@ -66,8 +66,8 @@ def pickup():
 
 @frappe.whitelist(allow_guest=True)
 def delivery_notification():
-    for parcel in json.loads(frappe.local.request.values["inputData"]):
-        set_deliverd(parcel, "Delivered")
+    parcel  = json.loads(frappe.local.request.values["inputData"])
+    set_deliverd(parcel, "Delivered")
 
 def set_deliverd(parcel, status):
     awb = parcel["clientShipmentId"]
@@ -81,13 +81,13 @@ def set_deliverd(parcel, status):
 
 @frappe.whitelist(allow_guest=True)
 def not_deliverd_notification():
-    for parcel in json.loads(frappe.local.request.values["inputData"]):
-        set_deliverd(parcel, "Not Delivered")
+    parcel = json.loads(frappe.local.request.values["inputData"])
+    set_deliverd(parcel, "Not Delivered")
 
 @frappe.whitelist(allow_guest=True)
 def partial_delivery_notification():
-    for parcel in json.loads(frappe.local.request.values["inputData"]):
-        set_deliverd(parcel, "Partial Delivery")
+    parcel = json.loads(frappe.local.request.values["inputData"])
+    set_deliverd(parcel, "Partial Delivery")
 
 
 @frappe.whitelist(allow_guest=True)
